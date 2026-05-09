@@ -197,15 +197,25 @@ func _parse_string_symbol(ast_node : AST.ASTNode) -> SymbolTable.SymbolPath:
 
 func _parse_symbol_path(ast_node : AST.ASTNode) -> SymbolTable.SymbolPath:
 	var path : SymbolTable.SymbolPath = _symbol_table.create_symbol_path(ast_node)
+	var bracket : int = 0
 	path.maybe_local = !_tokenizer.peek(0) or !_tokenizer.peek(0).is_punctuator(".")
 	path.set_log(_Logger.current_log)
 	path.line = _tokenizer.peek().line
 	
 	while !_tokenizer.is_eof():
 		var token : Token = _tokenizer.peek()
-		if token.is_punctuator(".") or token.is_punctuator(","):
-			_tokenizer.get_next()
-			break
+		if token.type == Token.Type.PUNCTUATOR:
+			if token.is_punctuator("."):
+				_tokenizer.get_next()
+				continue
+			elif token.is_punctuator(",") and bracket < 1:
+				break
+			else:
+				match token.get_value():
+					'(', '[', '{':
+						bracket += 1
+					')', ']', '}':
+						bracket -= 1
 		elif token.is_symbol():
 			_tokenizer.get_next()
 			var symbol : SymbolTable.Symbol = path.add(token.get_value())
