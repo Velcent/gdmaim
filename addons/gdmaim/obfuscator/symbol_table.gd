@@ -129,12 +129,10 @@ func resolve_symbol_paths() -> void:
 func obfuscate_symbols() -> void:
 	for symbol in _local_symbols:
 		if !_locked_symbols.has(symbol.get_name()):
-			#set_custom_seed(symbol.seed)
 			rename_symbol(symbol, _generate_symbol_name(symbol.get_name(), true))
 	
 	for symbol in _global_symbols.values():
 		if !_locked_symbols.has(symbol.get_name()):
-			#set_custom_seed(symbol.seed)
 			rename_symbol(symbol, _generate_symbol_name(symbol.get_name()))
 
 
@@ -203,7 +201,6 @@ class Symbol extends RefCounted:
 	var children : Dictionary
 	var string_params : Array
 	var parent : Symbol
-	#var seed : int = 0
 	
 	static func new_linked(type : String, ref : Symbol) -> Symbol:
 		var symbol := Symbol.new(ref.source_name, type)
