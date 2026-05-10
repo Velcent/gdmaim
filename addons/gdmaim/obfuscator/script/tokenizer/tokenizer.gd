@@ -329,7 +329,7 @@ func _read_operator() -> void:
 
 
 func _read_number() -> void:
-	_add_number_literal(_read_while(_is_literal_digit))
+	_add_number_literal(_read_while(_is_digit))
 	_can_be_nodepath = false
 
 
@@ -384,10 +384,9 @@ func _is_punctuator(char : String) -> bool:
 
 
 func _is_digit(char : String) -> bool:
-	return "0123456789".contains(char)
-		
-func _is_literal_digit(char : String) -> bool:
-	return ".0123456789_-exXbBabcdefABCDEF".contains(char)
+	if char == "x" and _stream.peek(0) == "0":
+		return true
+	return ".0123456789".contains(char)
 
 
 func _is_valid_identifier(char : String) -> bool:
